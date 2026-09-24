@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowDownRight,
   ArrowRight,
@@ -106,10 +106,34 @@ const videos = [
   },
 ];
 
+type Vacancy = { title: string; detail: string; url: string };
+
+const fallbackVacancies: Vacancy[] = [
+  { title: "მოლარე-კონსულტანტი", detail: "თბილისი • სრული განაკვეთი", url: SELF_URL },
+  { title: "მოლარე-კონსულტანტი", detail: "რეგიონები • სრული განაკვეთი", url: SELF_URL },
+];
+
 export default function CareerPage() {
   const [region, setRegion] = useState("ყველა");
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [vacancies, setVacancies] = useState<Vacancy[]>(fallbackVacancies);
+
+  useEffect(() => {
+    let active = true;
+    const updateVacancies = async () => {
+      try {
+        const response = await fetch("/api/jobs", { cache: "no-store" });
+        const data = await response.json() as { vacancies?: Vacancy[] };
+        if (active && Array.isArray(data.vacancies) && data.vacancies.length) setVacancies(data.vacancies);
+      } catch {
+        // Keep the useful fallback list visible while Selfrecruit is unavailable.
+      }
+    };
+    updateVacancies();
+    const timer = window.setInterval(updateVacancies, 300000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, []);
 
   const shownLocations = locations.filter(
     (location) =>
@@ -236,6 +260,29 @@ export default function CareerPage() {
           გუნდი <i>✦</i>
         </div>
       </div>
+
+      <section className={styles.roles} id="roles">
+        <div>
+          <span>01 / შემოუერთდი გუნდს</span>
+          <h2>სად აგრძელებ შენს<br />კარიერულ <em>გზას?</em></h2>
+          <p className={styles.liveJobs}>ვაკანსიები ავტომატურად ახლდება Way Mart-ის ოფიციალური გვერდიდან.</p>
+        </div>
+
+        <div className={styles.roleList}>
+          {vacancies.map((vacancy, index) => (
+            <a href={vacancy.url} target="_blank" rel="noreferrer" key={vacancy.url}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div><b>{vacancy.title}</b><small>{vacancy.detail}</small></div>
+              <ArrowUpRight />
+            </a>
+          ))}
+          <a href="/recruit-win">
+            <span>{String(vacancies.length + 1).padStart(2, "0")}</span>
+            <div><b>Recruit &amp; Win</b><small>გაუზიარე ვაკანსია მეგობარს და გაიგე მეტი</small></div>
+            <ArrowRight />
+          </a>
+        </div>
+      </section>
 
       <section className={styles.story} id="story">
         <div className={styles.sectionIntro}>
@@ -505,53 +552,6 @@ export default function CareerPage() {
           </a>
           .
         </p>
-      </section>
-
-      <section className={styles.roles} id="roles">
-        <div>
-          <span>05 / შემოუერთდი გუნდს</span>
-
-          <h2>
-            სად იწყება
-            <br />
-            შენი შემდეგი <em>ცვლა?</em>
-          </h2>
-        </div>
-
-        <div className={styles.roleList}>
-          <a href={SELF_URL} target="_blank" rel="noreferrer">
-            <span>01</span>
-
-            <div>
-              <b>მოლარე-კონსულტანტი</b>
-              <small>თბილისი • სრული განაკვეთი</small>
-            </div>
-
-            <ArrowUpRight />
-          </a>
-
-          <a href={SELF_URL} target="_blank" rel="noreferrer">
-            <span>02</span>
-
-            <div>
-              <b>მოლარე-კონსულტანტი</b>
-              <small>რეგიონები • სრული განაკვეთი</small>
-            </div>
-
-            <ArrowUpRight />
-          </a>
-
-          <a href="/recruit-win">
-            <span>03</span>
-
-            <div>
-              <b>Recruit &amp; Win</b>
-              <small>გაუზიარე ვაკანსია მეგობარს და გაიგე მეტი</small>
-            </div>
-
-            <ArrowRight />
-          </a>
-        </div>
       </section>
 
       <section className={styles.cta}>
