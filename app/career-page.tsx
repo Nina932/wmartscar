@@ -235,6 +235,22 @@ export default function CareerPage() {
             alt="Way Mart-ის მომხმარებლები მაღაზიის წინ"
           />
 
+          <a
+            className={styles.wheelInvite}
+            href="/recruit-win?mode=demo"
+            aria-label="დაატრიალე Recruit and Win-ის ბორბალი"
+          >
+            <span className={styles.wheelInviteLabel}>RECRUIT &amp; WIN</span>
+            <span className={styles.wheelPointer} />
+            <span className={styles.wheelPreview}>
+              <span>50₾<small>ვაუჩერი</small></span>
+              <b>დაატრიალე<small>3 ცდა</small></b>
+            </span>
+            <span className={styles.wheelInviteCta}>
+              ბორბლის დატრიალება <ArrowUpRight size={15} />
+            </span>
+          </a>
+
           <div className={styles.photoCaption}>
             <span>WAY MART</span>
 
