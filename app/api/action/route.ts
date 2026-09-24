@@ -1,10 +1,6 @@
-import { z } from 'zod';
-import { context,sameOrigin,failure } from '@/lib/access';
-import { mutate,load } from '@/lib/store';
-import { RuleError } from '@/lib/engine';
-const command=z.object({type:z.enum(['register','application.submitted','candidate.hired','employment.month_completed','spin','redeem','hold','release','revoke','config']),candidateId:z.string().max(100).optional(),name:z.string().max(80).optional(),referralCode:z.string().max(30).optional(),selfId:z.string().max(100).optional(),employeeId:z.string().max(100).optional(),eventId:z.string().max(100).optional(),startedAt:z.string().max(40).optional(),endedAt:z.string().max(40).optional(),firstShift:z.boolean().optional(),kind:z.enum(['meal','tease','voucher','referral']).optional(),code:z.string().max(64).optional(),reason:z.string().max(500).optional(),config:z.object({name:z.string().min(1).max(80).optional(),active:z.boolean().optional(),expiryDays:z.number().int().optional(),selfUrl:z.string().max(500).optional(),voucherAmount:z.number().optional()}).strict().optional()}).strict();
-export async function POST(req:Request){try{sameOrigin(req);const ctx=await context(req);const text=await req.text();if(text.length>5000)throw new RuleError('PAYLOAD_TOO_LARGE',413);const parsed=command.safeParse(JSON.parse(text));if(!parsed.success)throw new RuleError('INVALID_INPUT',400);const cmd=parsed.data;const own=['register','spin'].includes(cmd.type);if(!own&&!ctx.admin)throw new RuleError('FORBIDDEN',403);if(own&&!ctx.demo)cmd.candidateId=ctx.user.userId;cmd.candidateId ||=ctx.user.userId;
- if(!ctx.demo&&cmd.type!=='config'&&!own&&(!cmd.reason||cmd.reason.trim().length<8))throw new RuleError('EVIDENCE_REFERENCE_REQUIRED',400);
- const {state}=await load(ctx.scope);if(state.events.filter(x=>x.actor===ctx.actor&&x.at>Date.now()-60000).length>=30)throw new RuleError('RATE_LIMITED',429);
- const next=await mutate(ctx.scope,cmd,ctx.actor,ctx.demo?'demo':own?'candidate':'manual');return Response.json({ok:true,candidate:next.candidates.find(x=>x.id===cmd.candidateId)},{headers:{'Cache-Control':'no-store'}})}catch(e){return failure(e)}}
+import { forwardRecruitWinRequest } from "@/lib/recruit-win-proxy";
+
+export async function POST(request: Request) {
+  return forwardRecruitWinRequest(request, "/api/action");
+}
 
