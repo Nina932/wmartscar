@@ -235,22 +235,6 @@ export default function CareerPage() {
             alt="Way Mart-ის მომხმარებლები მაღაზიის წინ"
           />
 
-          <a
-            className={styles.wheelInvite}
-            href="/recruit-win?mode=demo"
-            aria-label="დაატრიალე Recruit and Win-ის ბორბალი"
-          >
-            <span className={styles.wheelInviteLabel}>RECRUIT &amp; WIN</span>
-            <span className={styles.wheelPointer} />
-            <span className={styles.wheelPreview}>
-              <span>50₾<small>ვაუჩერი</small></span>
-              <b>დაატრიალე<small>3 ცდა</small></b>
-            </span>
-            <span className={styles.wheelInviteCta}>
-              ბორბლის დატრიალება <ArrowUpRight size={15} />
-            </span>
-          </a>
-
           <div className={styles.photoCaption}>
             <span>WAY MART</span>
 
@@ -282,6 +266,21 @@ export default function CareerPage() {
           <span>01 / შემოუერთდი გუნდს</span>
           <h2>სად აგრძელებ შენს<br />კარიერულ <em>გზას?</em></h2>
           <p className={styles.liveJobs}>ვაკანსიები ავტომატურად ახლდება Way Mart-ის ოფიციალური გვერდიდან.</p>
+          <a
+            className={`${styles.wheelInvite} ${styles.rolesWheel}`}
+            href="/recruit-win?mode=demo"
+            aria-label="დაატრიალე Recruit and Win-ის ბორბალი"
+          >
+            <span className={styles.wheelInviteLabel}>RECRUIT &amp; WIN</span>
+            <span className={styles.wheelPointer} />
+            <span className={styles.wheelPreview}>
+              <span>50₾<small>ვაუჩერი</small></span>
+              <b>დაატრიალე<small>3 ცდა</small></b>
+            </span>
+            <span className={styles.wheelInviteCta}>
+              ბორბლის დატრიალება <ArrowUpRight size={15} />
+            </span>
+          </a>
         </div>
 
         <div className={styles.roleList}>
