@@ -14,6 +14,7 @@ export default function PrizeWheel({rotation,spinning,disabled,demo,kind='meal',
  function move(e:React.PointerEvent<HTMLDivElement>){if(e.pointerType==='touch'||spinning||matchMedia('(max-width: 700px)').matches)return;const b=e.currentTarget.getBoundingClientRect();setTilt({x:(e.clientY-b.top-b.height/2)/-70,y:(e.clientX-b.left-b.width/2)/70})}
  useEffect(()=>{if(!focused)return;const previous=document.body.style.overflow;document.body.style.overflow='hidden';return()=>{document.body.style.overflow=previous}},[focused]);
  function closeFocus(e?:React.MouseEvent){e?.stopPropagation();setFocused(false)}
+ function handleSpin(){setFocused(true);onSpin()}
  return <div className={'premium-wheel-stage '+(spinning?'running ':'')+(celebrate?'celebrating ':'')+(focused?'is-focused ':'')} onPointerMove={move} onPointerLeave={()=>setTilt({x:0,y:0})}>
  {focused&&<><button className="wheel-focus-backdrop" aria-label="ბორბლის ფოკუსის დახურვა" onClick={closeFocus}/><button className="wheel-focus-close" aria-label="დახურვა" onClick={closeFocus}><X size={22}/></button></>}
  <div className="wheel-stage-heading"><span className="edition">WAYMART / REWARDS</span><span className="edition-number">01—02</span></div>
@@ -25,7 +26,7 @@ export default function PrizeWheel({rotation,spinning,disabled,demo,kind='meal',
  <div className="disc-surface"/>
  {segments.map(([title,sub,Icon],i)=><div className="disc-label" key={i} style={{transform:'rotate('+(i*45)+'deg) translateY(calc(var(--label-radius) * -1)) rotate('+(-i*45)+'deg)'}}><span className="disc-icon"><Icon size={25}/></span><b>{title}</b><small>{sub}</small></div>)}
  </div><div className="disc-gloss"/>
- <button className="premium-spin-button" disabled={disabled} onClick={onSpin} aria-label="ბორბლის დატრიალება"><span className="tap-ring"/><span className="center-motion">{spinning?<RefreshCw size={25}/>:<ArrowUpRight size={29}/>}</span><b>{spinning?'ტრიალებს':completed?'გახსნილია':'დაატრიალე'}</b><small>{spinning?'შენი კარგი ამბავი…':completed?'3 / 3':stepLabel||'1 / 3'}</small></button>
+ <button className="premium-spin-button" disabled={disabled} onClick={handleSpin} aria-label="ბორბლის დატრიალება"><span className="tap-ring"/><span className="center-motion">{spinning?<RefreshCw size={25}/>:<ArrowUpRight size={29}/>}</span><b>{spinning?'ტრიალებს':completed?'გახსნილია':'დაატრიალე'}</b><small>{spinning?'შენი კარგი ამბავი…':completed?'3 / 3':stepLabel||'1 / 3'}</small></button>
  </div>
  <div className="wheel-live-label" aria-live="polite"><span/>{spinning?'ცოტაც… შენი საჩუქარი ახლოსაა':celebrate?'საჩუქარი გახსნილია!':'ერთი დატრიალება. კარგი დასაწყისი.'}</div>
  <div className="reward-float"><span><Coffee size={21}/></span><div><small>{floatTitle||'შენი შემდეგი დატრიალება'}</small><b>{floatPrize||(kind==='voucher'?'50₾-იანი ვაუჩერი':'ყავა ან ჰოთდოგი')}</b></div><Check size={16}/></div>
