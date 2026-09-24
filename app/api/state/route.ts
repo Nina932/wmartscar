@@ -1,0 +1,4 @@
+import { context, failure } from '@/lib/access';
+import { load } from '@/lib/store';
+import { metrics } from '@/lib/engine';
+export async function GET(req:Request){try{const ctx=await context(req);const {state}=await load(ctx.scope);const adminView=new URL(req.url).searchParams.get('admin')==='1'&&ctx.admin;return Response.json({demo:ctx.demo,admin:ctx.admin,userId:ctx.user.userId,config:state.config,candidates:adminView?state.candidates:state.candidates.filter(x=>x.id===ctx.user.userId),events:adminView?state.events.slice(-200).reverse():state.events.filter(x=>x.candidateId===ctx.user.userId).slice(-20).reverse(),metrics:adminView?metrics(state):undefined,referralCount:state.candidates.filter(x=>x.referredBy===ctx.user.userId&&x.applied).length},{headers:{'Cache-Control':'no-store'}})}catch(e){return failure(e)}}

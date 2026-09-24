@@ -1,0 +1,2 @@
+import {neon} from '@neondatabase/serverless';import nextEnv from '@next/env';
+nextEnv.loadEnvConfig(process.cwd());const url=process.env.DATABASE_URL||process.env.POSTGRES_URL;if(!url)throw Error('DATABASE_URL is required');const sql=neon(url);await sql.query('CREATE TABLE IF NOT EXISTS campaigns_v2(id TEXT PRIMARY KEY,version INTEGER NOT NULL DEFAULT 0,payload TEXT NOT NULL,updated_at BIGINT NOT NULL)');console.log('WayMart v2 schema ready');
